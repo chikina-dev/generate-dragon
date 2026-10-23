@@ -5,6 +5,3 @@ build/
 
 .DS_Store
 */.DS_Store
-
-public/img/*
-public/movie/*

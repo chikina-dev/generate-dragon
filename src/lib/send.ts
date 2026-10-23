@@ -1,4 +1,4 @@
-import { ActionRowBuilder, AttachmentBuilder, BaseGuildTextChannel, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ColorResolvable, EmbedBuilder, InteractionReplyOptions, InteractionResponse, MessageCreateOptions, MessagePayloadOption, WebhookMessageEditOptions } from "discord.js";
+import { ActionRowBuilder, AttachmentBuilder, BaseGuildTextChannel, ButtonBuilder, ButtonStyle, CommandInteraction, ColorResolvable, EmbedBuilder, InteractionReplyOptions, InteractionResponse, MessageCreateOptions, MessagePayloadOption, WebhookMessageEditOptions } from "discord.js";
 import { styleText } from "util";
 
 function GenerateText(text: string, ephemeral?: true) {
@@ -35,7 +35,7 @@ async function SendMessage(channel: BaseGuildTextChannel, data: MessageCreateOpt
 	return await channel.send(data);
 }
 
-async function SendReply(interaction: ChatInputCommandInteraction, data: InteractionReplyOptions): Promise<InteractionResponse> {
+async function SendReply(interaction: CommandInteraction, data: InteractionReplyOptions): Promise<InteractionResponse> {
 	sendLog(data);
 	return await interaction.reply(data);
 }

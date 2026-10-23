@@ -79,7 +79,7 @@ function GenerateDragonText({ subtitle, content, balloonImage, dragonImage }: Te
 	const canvas = createCanvas(balloonImage.width, balloonImage.height);
 	const context = canvas.getContext('2d');
 	generateDragonBase({ canvas, context, subtitle, balloonImage, dragonImage });
-	adjustTexts(context, content.split('\\n'), 500, 350, 175);
+	adjustTexts(context, content.split('\\n'), 500, 360, 175);
 	return canvas.createPNGStream();
 }
 

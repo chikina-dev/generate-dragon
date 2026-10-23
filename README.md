@@ -14,7 +14,6 @@ Discordのbotです。
 
 ```.env
 DISCORD_BOT_TOKEN=...
-LOG_CHANNEL_ID=...
 DISCORD_BOT_NAME="発表ドラゴン"
 
 DRAGON_BODY_IMAGE_PATH="./public/img/dragon.png"
@@ -27,10 +26,6 @@ DRAGON_BALLOON_IMAGE_PATH="./public/img/balloon.png"
 
 botのトークンを入れるところです。
 [qiitaの記事](https://qiita.com/1ntegrale9/items/cb285053f2fa5d0cccdf)等を確認してください。
-
-#### LOG_CHANNEL_ID
-
-起動した等のログを残すように作っている部分ですチャンネルIDをここに貼ってください。
 
 #### DISCORD_BOT_NAME
 

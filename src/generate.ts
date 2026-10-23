@@ -1,11 +1,10 @@
-import { AttachmentBuilder, ChatInputCommandInteraction, Client, Events, REST, Routes, SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "discord.js";
+import { AttachmentBuilder, Client, ChatInputCommandInteraction, Events, InteractionResponse, REST, Routes, SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "discord.js";
 import { loadImage, registerFont } from "canvas";
 import { GenerateDragonImage, GenerateDragonImageAndText, GenerateDragonText } from "./lib/generate/image";
 import * as send from "./lib/send";
 import { styleText } from "util";
-import GenerateDragonVideo from "./lib/generate/movie";
 
-type commandHandlerType = (interaction: ChatInputCommandInteraction) => Promise<any>;
+type commandHandlerType = (interaction: ChatInputCommandInteraction) => Promise<InteractionResponse | void>;
 
 type commandType = {
   name: string;
@@ -24,9 +23,9 @@ registerFont('./public/font/GenJyuuGothic-Normal.ttf', { family: 'GenJyuuGothic-
 
 const commands: commandType[] = [
   {
-    name: "generate_dragon_image",
+    name: "generate_dragon",
     builder: new SlashCommandBuilder()
-      .setName('generate_dragon_image')
+      .setName('generate_dragon')
       .setDescription('発表ドラゴンジェネレーターの画像です.')
       .addStringOption(option => option
         .setName('title')
@@ -54,6 +53,10 @@ const commands: commandType[] = [
         .setRequired(false)
       ),
     handler: async (interaction) => {
+      console.log(interaction.user.username);
+      console.log(interaction.user.tag);
+      console.log(interaction.user.id);
+      console.log(interaction.client.users.fetch(interaction.user.id));
       const subtitle = interaction.options.getString("title")
       const content = interaction.options.getString("content")
       const generateType = interaction.options.getString("type")
@@ -81,22 +84,6 @@ const commands: commandType[] = [
           return await send.SendReply(interaction, send.GenerateText(`タイプが不正です。`))
       }
     }
-  },{
-    name: "generate_dragon_movie",
-    builder: new SlashCommandBuilder()
-      .setName('generate_dragon_movie')
-      .setDescription('発表ドラゴンジェネレーターの動画です.'),
-    handler: async (interaction) => {
-      const reply = await send.SendReply(interaction, send.GenerateText(`動画生成中...`))
-      GenerateDragonVideo().then(async (path) => {
-        const videoAttachment = new AttachmentBuilder(path, { name: 'hapyou-dragon.mp4' })
-        return await send.SendEdit(reply, send.GenerateFile(videoAttachment));
-      })
-      .catch((error) => {
-        console.error('Failed to generate movie:', error);
-        return send.SendEdit(reply, send.GenerateText(`動画の生成に失敗しました。`))
-      })
-    }
   }
 ]
 function dragonHandlers(commands: commandType[]): { [key: string]: commandHandlerType } {
@@ -123,9 +110,14 @@ function GenerateDragon(client: Client) {
 
   if (process.env.DISCORD_BOT_TOKEN) {
     registerCommands(client, rest).then(() => {
+      console.log('Successfully registered application commands.');
       client.on(Events.InteractionCreate, async (interaction) => {
         if (interaction.isChatInputCommand()) {
-          return commandHandlers[interaction.commandName](interaction);
+          if (interaction.commandName in commandHandlers) {
+            return commandHandlers[interaction.commandName](interaction);
+          } else {
+            return await send.SendReply(interaction, send.GenerateText(`コマンドが見つかりません。`))
+          }
         }
       });
     });
